@@ -1,5 +1,6 @@
 package br.com.banco.domain.entity;
 
+import br.com.banco.domain.enummeration.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,23 @@ public class Account {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private List<BankStatement> bankStatements;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "account")
-    private List<Transaction> transactionsCarriedOut;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "account")
-    private List<Transaction> incomingTransactions;
-    @Column(nullable = false)private LocalDate createdAt;
+    private List<Transaction> transactions;
+    @Column(nullable = false)private LocalDate createdAt = LocalDate.now();
 
+    public void setBankStatements(BankStatement bankStatement){
+        this.bankStatements.add(bankStatement);
+    }
+
+    public void setTransactions(Transaction transaction){
+        this.transactions.add(transaction);
+        setAccountBalance(transaction.getValue(), transaction.getTransactionType());
+    }
+
+    public void setAccountBalance(BigDecimal value, TransactionType transactionType) {
+        if(transactionType.equals(TransactionType.DEPOSIT) || transactionType.equals(TransactionType.INCOMINGTRANSFER)) {
+            this.accountBalance = this.accountBalance.add(value);
+        }else{
+            this.accountBalance = this.accountBalance.subtract(value);
+        }
+    }
 }
