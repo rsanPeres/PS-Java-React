@@ -17,7 +17,8 @@ public class BankStatement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @ManyToOne()
-    private Operator operator;
+    private Account account;
     @Column(nullable = false) private LocalDate beginning;
     @Column(nullable = false) private LocalDate end;
+
 }

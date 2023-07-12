@@ -19,10 +19,14 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @OneToOne
-    private Customer customer;
+    private Operator operator;
     private BigDecimal accountBalance;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    private List<BankStatement> bankStatements;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "account")
-    private List<Transaction> transactions;
+    private List<Transaction> transactionsCarriedOut;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "account")
+    private List<Transaction> incomingTransactions;
     @Column(nullable = false)private LocalDate createdAt;
 
 }

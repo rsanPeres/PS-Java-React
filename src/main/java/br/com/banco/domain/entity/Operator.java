@@ -15,10 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Operator extends User {
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "operator")
-    private List<BankStatement> bankStatements;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "operator")
-    private List<Transaction> transactions;
+
 }
