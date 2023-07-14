@@ -2,12 +2,10 @@ package br.com.banco.application.dto;
 
 import br.com.banco.domain.entity.Account;
 import br.com.banco.domain.entity.BankStatement;
-import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@AllArgsConstructor
 public class BankStatementDto {
     public Long id;
     public Account account;
