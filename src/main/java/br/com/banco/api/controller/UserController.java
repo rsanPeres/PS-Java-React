@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public HttpResponse<GetUserResponse> getById(@PathVariable Long id){
+    public HttpResponse<GetUserResponse> getById(@PathVariable @Valid Long id){
         HttpRequest<GetUserResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/getByName/{name}")
-    public HttpResponse<GetUserResponse> getNameId(@PathVariable String name){
+    public HttpResponse<GetUserResponse> getNameId(@PathVariable @Valid String name){
         HttpRequest<GetUserResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public HttpResponse<CreateUserResponse> create(@RequestBody CreateUserRequest createRequest){
+    public HttpResponse<CreateUserResponse> create(@RequestBody @Valid CreateUserRequest createRequest){
         HttpRequest<CreateUserResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.POST;
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public HttpResponse<GetUserResponse> create(@RequestBody UpdateUserRequest updateRequest){
+    public HttpResponse<GetUserResponse> update(@RequestBody @Valid UpdateUserRequest updateRequest){
         HttpRequest<GetUserResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.PUT;
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    HttpResponse<Void> create(@PathVariable Long id) {
+    HttpResponse<Void> delete(@PathVariable @Valid Long id) {
         HttpRequest<Void> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.DELETE;

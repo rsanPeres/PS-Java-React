@@ -22,7 +22,7 @@ public class Account {
     @OneToOne
     private Operator operator;
     private BigDecimal accountBalance;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
     private List<BankStatement> bankStatements;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "account")
     private List<Transaction> transactions;

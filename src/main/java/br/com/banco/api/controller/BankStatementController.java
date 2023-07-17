@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class BankStatementController {
     }
 
     @GetMapping("/all/{nameOperator}")
-    public HttpResponse<List<BankStatementResponse>> getAll(@PathVariable String nameOperator){
+    public HttpResponse<List<BankStatementResponse>> getAll(@PathVariable @Valid String nameOperator){
             HttpRequest<List<BankStatementResponse>> httpRequest = new HttpRequest<>();
             String url = request.getRequestURL().toString();
             HttpMethod method = HttpMethod.GET;
@@ -41,7 +42,7 @@ public class BankStatementController {
     }
 
     @GetMapping("/creationDate/{date}")
-    public HttpResponse<List<BankStatementResponse>> getByCreationDate(@PathVariable LocalDate date){
+    public HttpResponse<List<BankStatementResponse>> getByCreationDate(@PathVariable @Valid LocalDate date){
         HttpRequest<List<BankStatementResponse>> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -51,11 +52,11 @@ public class BankStatementController {
     }
 
     @GetMapping("/create")
-    public HttpResponse<BankStatementResponse> getByStartAndEndDate(@RequestBody CreateBankStatementRequest requestB){
+    public HttpResponse<BankStatementResponse> getByStartAndEndDate(@RequestBody @Valid CreateBankStatementRequest requestB){
         HttpRequest<BankStatementResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
-        BankStatementDto statementsDto = service.create(requestB.start, requestB.end, requestB.nameOperator);
+        BankStatementDto statementsDto = service.save(requestB.start, requestB.end, requestB.nameOperator);
         return httpRequest.sendRequest(mapper.map(statementsDto, BankStatementResponse.class), url, method);
     }
 }

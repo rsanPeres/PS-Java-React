@@ -8,5 +8,5 @@ import java.util.List;
 public interface IBankStatementService {
     List<BankStatementDto> getAll(String nameOperator);
     List<BankStatementDto> getByCreationDate(LocalDate criation);
-    BankStatementDto create(LocalDate biginning, LocalDate end, String nameOperator);
+    BankStatementDto save(LocalDate biginning, LocalDate end, String nameOperator);
 }

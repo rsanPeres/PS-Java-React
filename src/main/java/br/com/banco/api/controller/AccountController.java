@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public HttpResponse<GetAccountResponse> getById(@PathVariable Long id){
+    public HttpResponse<GetAccountResponse> getById(@PathVariable @Valid Long id){
         HttpRequest<GetAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -42,7 +43,7 @@ public class AccountController {
     }
 
     @GetMapping("/getByName/{nameOperator}")
-    public HttpResponse<GetAccountResponse> getByOperatorName(@PathVariable String nameOperator){
+    public HttpResponse<GetAccountResponse> getByOperatorName(@PathVariable @Valid String nameOperator){
         HttpRequest<GetAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -51,7 +52,7 @@ public class AccountController {
     }
 
     @GetMapping("/getByEmail/{email}")
-    public HttpResponse<GetAccountResponse> getByOperatorEmail(@PathVariable String email){
+    public HttpResponse<GetAccountResponse> getByOperatorEmail(@PathVariable @Valid String email){
         HttpRequest<GetAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -60,7 +61,7 @@ public class AccountController {
     }
 
     @GetMapping("/getTransactions/{operatorName}")
-    public HttpResponse<List<GetTransactionResponse>> create(@PathVariable String operatorName){
+    public HttpResponse<List<GetTransactionResponse>> create(@PathVariable @Valid String operatorName){
         HttpRequest<List<GetTransactionResponse>> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.GET;
@@ -70,7 +71,7 @@ public class AccountController {
     }
 
     @PostMapping()
-    public HttpResponse<CreateAccountResponse> create(@RequestBody CreateAccountRequest createRequest){
+    public HttpResponse<CreateAccountResponse> create(@RequestBody @Valid CreateAccountRequest createRequest){
         HttpRequest<CreateAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.POST;
@@ -79,7 +80,7 @@ public class AccountController {
     }
 
     @PostMapping("/addStatements/{operatorEmail}")
-    public HttpResponse<GetAccountResponse> addStatements(@RequestBody CreateBankStatementRequest createRequest, @PathVariable String operatorEmail){
+    public HttpResponse<GetAccountResponse> addStatements(@RequestBody @Valid CreateBankStatementRequest createRequest, @PathVariable @Valid String operatorEmail){
         HttpRequest<GetAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.POST;
@@ -88,7 +89,7 @@ public class AccountController {
     }
 
     @PostMapping("/addTransactions/{operatorEmail}")
-    public HttpResponse<GetAccountResponse> addTransactions(@RequestBody CreateTransactionRequest createRequest, @PathVariable String operatorEmail){
+    public HttpResponse<GetAccountResponse> addTransactions(@RequestBody @Valid CreateTransactionRequest createRequest, @PathVariable @Valid String operatorEmail){
         HttpRequest<GetAccountResponse> httpRequest = new HttpRequest<>();
         String url = request.getRequestURL().toString();
         HttpMethod method = HttpMethod.POST;

@@ -7,12 +7,16 @@ import br.com.banco.application.service.IAccountService;
 import br.com.banco.domain.entity.Account;
 import br.com.banco.domain.entity.BankStatement;
 import br.com.banco.domain.entity.Transaction;
+import br.com.banco.domain.exception.NotFoundByIdException;
+import br.com.banco.domain.exception.NotFoundByNameException;
+import br.com.banco.domain.exception.NotFoundByOperatorEmailException;
 import br.com.banco.repository.AccountRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService implements IAccountService {
@@ -34,13 +38,22 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDto getById(Long id) {
         Account account = repository.getById(id);
-        return mapper.map(account, AccountDto.class);
+        if(account.getId().describeConstable().isPresent()) {
+            return mapper.map(account, AccountDto.class);
+        }
+        else {
+            throw new NotFoundByIdException("Account not found by Id");
+        }
     }
 
     @Override
     public AccountDto getByOperatorEmail(String emailOperator) {
         Account account = repository.findByOperatorEmail(emailOperator);
-        return mapper.map(account, AccountDto.class);
+        if(account.getId().describeConstable().isPresent()) {
+            return mapper.map(account, AccountDto.class);
+        }else {
+            throw new NotFoundByOperatorEmailException("Account not found by email");
+        }
     }
 
     @Override
@@ -48,8 +61,11 @@ public class AccountService implements IAccountService {
         String[] names = operatorName.split("\\s+");
 
         Account account = repository.findByOperatorName(names[0], names[1]);
-
-        return mapper.map(account, AccountDto.class);
+        if(account.getId().describeConstable().isPresent()) {
+            return mapper.map(account, AccountDto.class);
+        }else {
+            throw new NotFoundByNameException("Account not Found by operator name");
+        }
     }
 
     @Override
@@ -58,23 +74,35 @@ public class AccountService implements IAccountService {
 
         Account account = repository.findByOperatorName(names[0], names[1]);
         List<Transaction> transactions = repository.findTransactionsByAccountId(account.getId());
-        return null;
+        if(!transactions.isEmpty()){
+            return transactions.stream().map(x -> mapper.map(x, TransactionDto.class)).collect(Collectors.toList());
+        }else {
+            throw new NotFoundByNameException("Transactions not found by operator name");
+        }
     }
 
     @Override
     public AccountDto addTransaction(TransactionDto transactionDto, String emailOperator) {
         Account account = repository.findByOperatorEmail(emailOperator);
-        transactionDto.account.setId(account.getId());
-        account.setTransactions(mapper.map(transactionDto, Transaction.class));
-        repository.save(account);
-        return mapper.map(account, AccountDto.class);
+        if(account.getId().describeConstable().isEmpty()){
+            throw new NotFoundByOperatorEmailException("Account not found by operator email");
+        }else {
+            transactionDto.account.setId(account.getId());
+            account.setTransactions(mapper.map(transactionDto, Transaction.class));
+            repository.save(account);
+            return mapper.map(account, AccountDto.class);
+        }
     }
 
     @Override
     public AccountDto addBankStatements(BankStatementDto bankStatementDto, String operatorEmail) {
         Account account = repository.findByOperatorEmail(operatorEmail);
-        bankStatementDto.account.setId(account.getId());
-        account.setBankStatements(mapper.map(bankStatementDto, BankStatement.class));
-        return mapper.map(account, AccountDto.class);
+        if(account.getId().describeConstable().isEmpty()){
+            throw new NotFoundByOperatorEmailException("Account not found by operator email");
+        }else {
+            bankStatementDto.account.setId(account.getId());
+            account.setBankStatements(mapper.map(bankStatementDto, BankStatement.class));
+            return mapper.map(account, AccountDto.class);
+        }
     }
 }

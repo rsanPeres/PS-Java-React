@@ -4,6 +4,8 @@ import br.com.banco.application.dto.TransactionDto;
 import br.com.banco.application.dto.UserDto;
 import br.com.banco.application.service.ITransactionService;
 import br.com.banco.domain.entity.Transaction;
+import br.com.banco.domain.exception.DateException;
+import br.com.banco.domain.exception.NotFoundByNameException;
 import br.com.banco.repository.TransactionRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,15 @@ public class TransactionService implements ITransactionService {
     @Override
     public List<TransactionDto> getTransactionsByOperatorAndDateRange(LocalDate start, LocalDate end, UserDto operator) {
         List<Transaction> transactions = repository.findTransactionsByOperatorAndDateRange(operator.firstName, operator.lastName, start, end);
-        return transactions.stream().map(x -> mapper.map(x, TransactionDto.class)).collect(Collectors.toList());
+        if(!transactions.isEmpty()) {
+            if(transactions.stream().findFirst().get().getAccount().getCreatedAt().isAfter(start)){
+                throw new DateException("Date start is before creation date account");
+            }else if (end.isAfter(LocalDate.now())){
+                throw new DateException("Date end is after now");
+            }
+            return transactions.stream().map(x -> mapper.map(x, TransactionDto.class)).collect(Collectors.toList());
+        }else {
+            throw new NotFoundByNameException("Transaction not found by operator name");
+        }
     }
 }

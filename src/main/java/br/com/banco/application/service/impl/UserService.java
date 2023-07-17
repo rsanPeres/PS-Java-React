@@ -3,6 +3,8 @@ package br.com.banco.application.service.impl;
 import br.com.banco.application.dto.UserDto;
 import br.com.banco.application.service.IUserService;
 import br.com.banco.domain.entity.User;
+import br.com.banco.domain.exception.NotFoundByIdException;
+import br.com.banco.domain.exception.NotFoundByNameException;
 import br.com.banco.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +30,35 @@ public class UserService implements IUserService {
     @Override
     public UserDto getById(Long id) {
         User user = repository.getById(id);
-        return mapper.map(user, UserDto.class);
+        if(user.getId().describeConstable().isPresent()){
+            return mapper.map(user, UserDto.class);
+        }else {
+            throw new NotFoundByIdException("User not found by Id");
+        }
     }
 
     @Override
     public UserDto getByName(String name) {
         User user = repository.getByName(name);
-        return mapper.map(user, UserDto.class);
+        if(user.getId().describeConstable().isPresent()){
+            return mapper.map(user, UserDto.class);
+        }else {
+            throw new NotFoundByNameException("User not found by name");
+        }
     }
 
     @Override
     public UserDto update(UserDto dto) {
         User user = repository.getByName(dto.firstName);
-        user.setPassword(dto.password);
-        user.setEmail(dto.email);
-        user.setIncome(dto.income);
-        repository.save(user);
-        return mapper.map(user, UserDto.class);
+        if(user.getId().describeConstable().isPresent()) {
+            user.setPassword(dto.password);
+            user.setEmail(dto.email);
+            user.setIncome(dto.income);
+            repository.save(user);
+            return mapper.map(user, UserDto.class);
+        }else {
+            throw new NotFoundByNameException("User not found by name");
+        }
     }
 
     @Override
